@@ -20,12 +20,18 @@ A <- matrix[,2:7]
 A
 ```
 
-## Including Plots
+```{r}
+b<-read.csv("matrix.csv")
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+head(b)
+a<-as.matrix(b[1:429,2:6])
+A<-t(a)%*%a
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+v1<-svd(A)$u[,1]
+v2<-svd(A)$u[,2]
+
+plot(v1,v2)
+text(v1, v2, label = b$ï..person)
+```
