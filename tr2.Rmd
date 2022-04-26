@@ -7,6 +7,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+### Let B denote bipartisan matrix(the First one)
+### Let P denote partisan matrix(the second one)
+### Let F denote full matrix(the third one)
 
 
 ```{r cars}
@@ -15,156 +18,173 @@ library(ggplot2)
 library(dplyr)
 ```
 
-```{r}
-Bfile<-read.csv("fullmatrix.csv")
-head(Bfile)
 
-B<-as.matrix(Bfile[1:429,4:9])
+### The bipartisan matrix
+```{r}
+matrix<-read.csv("fullmatrix.csv")
+
+B<-as.matrix(matrix[1:429,4:9])
 btb<-t(B)%*%B
 btb
 eigen(btb)
 ```
 
 ```{r}
-u1<-svd(btb)$u[,1]/norm(svd(btb)$u[,1],'2') #normalized dominate eigenvector
-u2<-svd(btb)$u[,2]/norm(svd(btb)$u[,2], '2') #normalized second eigenvector
+bu1<-svd(btb)$u[,1]/norm(svd(btb)$u[,1],'2') #normalized dominate eigenvector
+bu2<-svd(btb)$u[,2]/norm(svd(btb)$u[,2], '2') #normalized second eigenvector
 btbval <- svd(btb)$d
-head(u1)
+head(bu1)
 
 ```
 
 ```{r}
 btbval/sum(btbval)
 ```
+In this case, we found that the dominant eigenvector accounts for over 78% of the voting matrix, the second vector account for over 13% of the voting matrix, along with the other eigenvectors that each account for less than 5% of the matrix.
+
+To get v1 and v2:
 ```{r}
 bbt <- B %*% t(B)
-v1 <- eigen(bbt)$vectors[,1]/norm(eigen(bbt)$vectors[,1],'2') #normalized v1
-v2 <- eigen(bbt)$vectors[,2]/norm(eigen(bbt)$vectors[,2],'2') #normalized v2
+bv1 <- eigen(bbt)$vectors[,1]/norm(eigen(bbt)$vectors[,1],'2') #normalized v1
+bv2 <- eigen(bbt)$vectors[,2]/norm(eigen(bbt)$vectors[,2],'2') #normalized v2
 
 marijuana <- data.frame(
-  party = Bfile[1:429,3],
-  v1 = v1,
-  v2 = v2
+  party = matrix[1:429,3],
+  bv1 = bv1,
+  bv2 = bv2
 )
 
 ggplot() + 
-  geom_jitter(data = marijuana, aes(x = v1, y = v2, color = party),size=2,height=.005,width=.005) +
+  geom_jitter(data = marijuana, aes(x = bv1, y = bv2, color = party),size=1,height=.005,width=.005) +
   scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))
 
 ```
 
-In this case, we found that the dominant eigenvector accounts for over 78% of the voting matrix, the second vector account for over 13% of the voting matrix, along with the other eigenvectors that account for less than 5% of the matrix.
 
-We can use the dominant and the second eigenvectors to approximate our voting matrix, which gives us:
+
+We can use the dominant and the second eigenvectors to approximate our voting matrix B, which gives us:
 ```{r}
-appro <- sqrt(eigen(btb)$values[1]) * u1 %*% t(v1) + sqrt(eigen(btb)$values[2]) * u2 %*% t(v2)
-appro
+Bappro <- sqrt(eigen(btb)$values[1]) * bu1 %*% t(bv1) + sqrt(eigen(btb)$values[2]) * bu2 %*% t(bv2)
+Bappro
 ```
 
 
+### The bipartisan matrix
+```{r}
+P<-as.matrix(matrix[1:429,10:24])
+ptp<-t(P)%*%P
+ptp
+eigen(ptp)
+
+pu1<-svd(ptp)$u[,1]/norm(svd(ptp)$u[,1],'2') #normalized dominate eigenvector
+pu2<-svd(ptp)$u[,2]/norm(svd(ptp)$u[,2],'2') #normalized second eigenvector
+ptpval <- svd(ptp)$d
+```
 
 ```{r}
+ptpval/sum(ptpval)
+```
+In this case, we found that the dominant eigenvector accounts for over 85% of the voting matrix, the second vector account for over 6% of the voting matrix, along with the other eigenvectors that each account for less than 1% of the matrix.
 
-Bfile<-read.csv("fullmatrix.csv")
-head(Bfile)
-
-B<-as.matrix(Bfile[1:429,10:24])
-btb<-t(B)%*%B
-btb
-eigen(btb)
-
-u1<-svd(btb)$u[,1]/norm(svd(btb)$u[,1],'2') #normalized dominate eigenvector
-u2<-svd(btb)$u[,2]/norm(svd(btb)$u[,2],'2') #normalized second eigenvector
-btbval <- svd(btb)$d
-head(u1)
-
-
-btbval/sum(btbval)
-
-bbt <- B %*% t(B)
-b1 <- eigen(bbt)$vectors[,1]/norm(eigen(bbt)$vectors[,1],'2') #normalized v1
-b2 <- eigen(bbt)$vectors[,2]/norm(eigen(bbt)$vectors[,2],'2') #normalized v2
-b3 <- eigen(bbt)$vectors[,3]/norm(eigen(bbt)$vectors[,3],'2') #normalized v3
+To get v1 and v2:
+```{r}
+ppt <- P %*% t(P)
+pv1 <- eigen(bbt)$vectors[,1]/norm(eigen(bbt)$vectors[,1],'2') #normalized v1
+pv2 <- eigen(bbt)$vectors[,2]/norm(eigen(bbt)$vectors[,2],'2') #normalized v2
+pv3 <- eigen(bbt)$vectors[,3]/norm(eigen(bbt)$vectors[,3],'2') #normalized v3
 controversial <- data.frame(
-  party = Bfile[1:429,3],
-  v1 = b1,
-  v2 = b2,
-  v3 = b3
+  party = matrix[1:429,3],
+  pv1 = pv1,
+  pv2 = pv2,
+  pv3 = pv3
 )
+```
 
-ggplot(controversial,aes(v1,v2)) + 
-  geom_jitter(aes(color = party),size=2,width=.005,height=.005) +
+```{r}
+ggplot(controversial,aes(pv1,pv2)) + 
+  geom_jitter(aes(color = party),size=1,width=.005,height=.005) +
   scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))
+```
 
-appro <- sqrt(eigen(btb)$values[1]) * u1 %*% t(v1) + sqrt(eigen(btb)$values[2]) * u2 %*% t(v2)
-appro
+```{r}
+Pappro <- sqrt(eigen(ptp)$values[1]) * pu1 %*% t(pv1) + sqrt(eigen(ptp)$values[2]) * pu2 %*% t(pv2)
+Pappro
 ```
 ##kmeans baby
+
+# If we scale controversial_k
 ```{r}
 controversial_k<-controversial%>% 
-  select(v1,v2,v3)
+  select(pv1,pv2,pv3)
 set.seed(169)
 kclust_controversial<-kmeans(scale(controversial_k),centers=3)
-kclust_controversial2<-kmeans(controversial_k,centers=3)
+
 head(kclust_controversial)
-head(kclust_controversial2)
+
 
 controversial<-controversial%>%
-  mutate(kclust_controversial=as.factor(as.numeric(kclust_controversial$cluster)))
-ggplot(controversial,aes(v1,v2)) + 
+  mutate(kclust_controversial=as.factor(kclust_controversial$cluster))
+ggplot(controversial,aes(pv1,pv2)) + 
   geom_jitter(aes(color = kclust_controversial),size=1,width=.005,height=.005) 
-controversial$v3
+controversial$pv3
 ```
+# If we don't scale controversial_k
+```{r}
+kclust_controversial2<-kmeans(controversial_k,centers=3)
+head(kclust_controversial2)
+controversial<-controversial%>%
+  mutate(kclust_controversial2=as.factor(kclust_controversial2$cluster))
+ggplot(controversial,aes(pv1,pv2)) + 
+  geom_jitter(aes(color = kclust_controversial2),size=1,width=.005,height=.005) 
+controversial$pv3
+```
+
+
 ##heirarchical clustering #ask the shuman
 ```{r}
 dist_mat_scaled<-dist(scale(controversial_k))
 hc_complete<-hclust(dist_mat_scaled,method="complete")
 plot(hc_complete)
 controversial<-controversial%>%
-  mutate(hclust_height3=factor(cutree(hc_complete,h=4)))
-ggplot(controversial,aes(v1,v2)) + 
+  mutate(hclust_height3=factor(cutree(hc_complete,h=3)))
+ggplot(controversial,aes(pv1,pv2)) + 
   geom_jitter(aes(color = hclust_height3),size=1,width=.005,height=.005)
 ```
 
 ```{r}
+Ful<-as.matrix(matrix[1:429,4:24])
+ftf<-t(Ful)%*%Ful
+ftf
+eigen(ftf)
 
-Bfile<-read.csv("fullmatrix.csv")
-head(Bfile)
-
-B<-as.matrix(Bfile[1:429,4:24])
-btb<-t(B)%*%B
-btb
-eigen(btb)
-
-u1<-svd(btb)$u[,1]/norm(svd(btb)$u[,1],'2') #normalized dominate eigenvector
-u2<-svd(btb)$u[,2]/norm(svd(btb)$u[,2],'2') #normalized second eigenvector
-btbval <- svd(btb)$d
-head(u1)
+fu1<-svd(ftf)$u[,1]/norm(svd(ftf)$u[,1],'2') #normalized dominate eigenvector
+fu2<-svd(ftf)$u[,2]/norm(svd(ftf)$u[,2],'2') #normalized second eigenvector
+ftfval <- svd(ftf)$d
+head(fu1)
 
 
-btbval/sum(btbval)
+ftfval/sum(ftfval)
 
-bbt <- B %*% t(B)
-v1 <- eigen(bbt)$vectors[,1]/norm(eigen(bbt)$vectors[,1],'2') #normalized v1
-v1
-v2 <- eigen(bbt)$vectors[,2]/norm(eigen(bbt)$vectors[,2],'2') #normalized v2
+fft <- Ful %*% t(Ful)
+fv1 <- eigen(fft)$vectors[,1]/norm(eigen(fft)$vectors[,1],'2') #normalized v1
+fv1
+fv2 <- eigen(fft)$vectors[,2]/norm(eigen(fft)$vectors[,2],'2') #normalized v2
 
-controversial <- data.frame(
-  party = Bfile[1:429,3],
-  name = Bfile[1:429,2],
-  v1 = v1,
-  v2 = v2
+full <- data.frame(
+  party = matrix[1:429,3],
+  fv1 = fv1,
+  fv2 = fv2
 )
-controversial
+
 
 ggplot() + 
-  geom_jitter(data = controversial, aes(x = v1, y = v2, color = party,label=controversial$name),size=2,width=.005,height=.005) +
+  geom_jitter(data = full, aes(x = fv1, y = fv2, color = party,label=controversial$name),size=2,width=.005,height=.005)+
   geom_text()+
   scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))
 
 
-appro <- sqrt(eigen(btb)$values[1]) * u1 %*% t(v1) + sqrt(eigen(btb)$values[2]) * u2 %*% t(v2)
-appro
+Fappro <- sqrt(eigen(ftf)$values[1]) * fu1 %*% t(fv1) + sqrt(eigen(ftf)$values[2]) * fu2 %*% t(fv2)
+Fappro
 ```
 
 
