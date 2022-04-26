@@ -15,40 +15,101 @@ When you click the **Knit** button a document will be generated that includes bo
 
 ```{r cars}
 library(readr)
+library(ggplot2)
 ```
 
 ```{r}
-b<-read.csv("matrix.csv")
+Bfile<-read.csv("fullmatrix.csv")
+head(Bfile)
 
-head(b)
-a<-as.matrix(b[1:429,2:7])
-A<-t(a)%*%a
-A
-eigen(A)
+B<-as.matrix(Bfile[1:429,4:9])
+btb<-t(B)%*%B
+btb
+eigen(btb)
 ```
 
 ```{r}
-u1<-svd(A)$u[,1]/norm(svd(A)$u[,1],'2') #normalized dominate eigenvector
-u2<-svd(A)$u[,2]/norm(svd(A)$u[,2], '2') #normalized second eigenvector
-eigenvalues <- svd(A)$d
+u1<-svd(btb)$u[,1]/norm(svd(btb)$u[,1],'2') #normalized dominate eigenvector
+u2<-svd(btb)$u[,2]/norm(svd(btb)$u[,2], '2') #normalized second eigenvector
+btbval <- svd(btb)$d
 head(u1)
-plot(u1,u2)
-#text(u1, u2, label = '.')
+
 ```
 
 ```{r}
-eigenvalues/sum(eigenvalues)
+btbval/sum(btbval)
 ```
 ```{r}
-v1 <- eigen(a%*%t(a))$vectors[,1]/norm(eigen(a%*%t(a))$vectors[,1],'2') #normalized v1
-v2 <- eigen(a%*%t(a))$vectors[,2]/norm(eigen(a%*%t(a))$vectors[,2],'2') #normalized v2
+bbt <- B %*% t(B)
+v1 <- eigen(bbt)$vectors[,1]/norm(eigen(bbt)$vectors[,1],'2') #normalized v1
+v2 <- eigen(bbt)$vectors[,2]/norm(eigen(bbt)$vectors[,2],'2') #normalized v2
+
+russian <- data.frame(
+  party = Bfile[1:429,3],
+  v1 = v1,
+  v2 = v2
+)
+
+ggplot() + 
+  geom_point(data = russian, aes(x = v1, y = v2, color = party),size=2) +
+  scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))
+
 ```
 
 In this case, we found that the dominant eigenvector accounts for over 78% of the voting matrix, the second vector account for over 13% of the voting matrix, along with the other eigenvectors that account for less than 5% of the matrix.
 
 We can use the dominant and the second eigenvectors to approximate our voting matrix, which gives us:
 ```{r}
-appro <- sqrt(eigen(A)$values[1]) * u1 %*% t(v1) + sqrt(eigen(A)$values[2]) * u2 %*% t(v2)
+appro <- sqrt(eigen(btb)$values[1]) * u1 %*% t(v1) + sqrt(eigen(btb)$values[2]) * u2 %*% t(v2)
 appro
 ```
+
+
+
+```{r}
+
+Bfile<-read.csv("fullmatrix.csv")
+head(Bfile)
+
+B<-as.matrix(Bfile[1:429,10:24])
+btb<-t(B)%*%B
+btb
+eigen(btb)
+
+u1<-svd(btb)$u[,1]/norm(svd(btb)$u[,1],'2') #normalized dominate eigenvector
+u2<-svd(btb)$u[,2]/norm(svd(btb)$u[,2],'2') #normalized second eigenvector
+btbval <- svd(btb)$d
+head(u1)
+
+
+btbval/sum(btbval)
+
+bbt <- B %*% t(B)
+v1 <- eigen(bbt)$vectors[,1]/norm(eigen(bbt)$vectors[,1],'2') #normalized v1
+v2 <- eigen(bbt)$vectors[,2]/norm(eigen(bbt)$vectors[,2],'2') #normalized v2
+
+controversial <- data.frame(
+  party = Bfile[1:429,3],
+  v1 = v1,
+  v2 = v2
+)
+
+ggplot() + 
+  geom_point(data = controversial, aes(x = v1, y = v2, color = party),size=2) +
+  scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))
+
+
+appro <- sqrt(eigen(btb)$values[1]) * u1 %*% t(v1) + sqrt(eigen(btb)$values[2]) * u2 %*% t(v2)
+appro
+```
+
+
+
+
+
+
+
+
+
+
 
