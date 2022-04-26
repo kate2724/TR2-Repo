@@ -32,18 +32,23 @@ u1<-svd(A)$u[,1]/norm(svd(A)$u[,1],'2') #normalized dominate eigenvector
 u2<-svd(A)$u[,2]/norm(svd(A)$u[,2], '2') #normalized second eigenvector
 eigenvalues <- svd(A)$d
 head(u1)
-plot(u1,u2) +
-text(u1, u2, label = b$person)
+plot(u1,u2)
+#text(u1, u2, label = '.')
 ```
 
 ```{r}
-eigenvalues^2/sum(eigenvalues^2)
+eigenvalues/sum(eigenvalues)
 ```
 ```{r}
 v1 <- eigen(a%*%t(a))$vectors[,1]/norm(eigen(a%*%t(a))$vectors[,1],'2') #normalized v1
 v2 <- eigen(a%*%t(a))$vectors[,2]/norm(eigen(a%*%t(a))$vectors[,2],'2') #normalized v2
 ```
-```{r}
 
+In this case, we found that the dominant eigenvector accounts for over 78% of the voting matrix, the second vector account for over 13% of the voting matrix, along with the other eigenvectors that account for less than 5% of the matrix.
+
+We can use the dominant and the second eigenvectors to approximate our voting matrix, which gives us:
+```{r}
+appro <- sqrt(eigen(A)$values[1]) * u1 %*% t(v1) + sqrt(eigen(A)$values[2]) * u2 %*% t(v2)
+appro
 ```
 
