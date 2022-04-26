@@ -15,25 +15,35 @@ When you click the **Knit** button a document will be generated that includes bo
 
 ```{r cars}
 library(readr)
-matrix <- read_csv("~/Documents/tax/Untitled/matrix.csv")
-A <- matrix[,2:7]
-A
 ```
 
 ```{r}
 b<-read.csv("matrix.csv")
 
 head(b)
-a<-as.matrix(b[1:429,2:6])
+a<-as.matrix(b[1:429,2:7])
 A<-t(a)%*%a
 A
+eigen(A)
 ```
 
 ```{r}
-v1<-svd(a)$u[,1]
-v2<-svd(a)$u[,2]
-svd(A)
-head(v1)
-plot(v1,v2)
-text(v1, v2, label = b$ï..person)
+u1<-svd(A)$u[,1]/norm(svd(A)$u[,1],'2') #normalized dominate eigenvector
+u2<-svd(A)$u[,2]/norm(svd(A)$u[,2], '2') #normalized second eigenvector
+eigenvalues <- svd(A)$d
+head(u1)
+plot(u1,u2) +
+text(u1, u2, label = b$person)
 ```
+
+```{r}
+eigenvalues^2/sum(eigenvalues^2)
+```
+```{r}
+v1 <- eigen(a%*%t(a))$vectors[,1]/norm(eigen(a%*%t(a))$vectors[,1],'2') #normalized v1
+v2 <- eigen(a%*%t(a))$vectors[,2]/norm(eigen(a%*%t(a))$vectors[,2],'2') #normalized v2
+```
+```{r}
+
+```
+
