@@ -47,7 +47,7 @@ marijuana <- data.frame(
 )
 
 ggplot() + 
-  geom_point(data = marijuana, aes(x = v1, y = v2, color = party),size=2) +
+  geom_jitter(data = marijuana, aes(x = v1, y = v2, color = party),size=2,height=.005,width=.005) +
   scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))
 
 ```
@@ -81,19 +81,18 @@ head(u1)
 btbval/sum(btbval)
 
 bbt <- B %*% t(B)
-v1 <- eigen(bbt)$vectors[,1]/norm(eigen(bbt)$vectors[,1],'2') #normalized v1
-v2 <- eigen(bbt)$vectors[,2]/norm(eigen(bbt)$vectors[,2],'2') #normalized v2
+b1 <- eigen(bbt)$vectors[,1]/norm(eigen(bbt)$vectors[,1],'2') #normalized v1
+b2 <- eigen(bbt)$vectors[,2]/norm(eigen(bbt)$vectors[,2],'2') #normalized v2
 
 controversial <- data.frame(
   party = Bfile[1:429,3],
-  v1 = v1,
-  v2 = v2
+  v1 = b1,
+  v2 = b2
 )
 
-ggplot() + 
-  geom_point(data = controversial, aes(x = v1, y = v2, color = party),size=2) +
+ggplot(controversial,aes(v1,v2)) + 
+  geom_jitter(aes(color = party),size=2,width=.005,height=.005) +
   scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))
-
 
 appro <- sqrt(eigen(btb)$values[1]) * u1 %*% t(v1) + sqrt(eigen(btb)$values[2]) * u2 %*% t(v2)
 appro
@@ -124,12 +123,15 @@ v2 <- eigen(bbt)$vectors[,2]/norm(eigen(bbt)$vectors[,2],'2') #normalized v2
 
 controversial <- data.frame(
   party = Bfile[1:429,3],
+  name = Bfile[1:429,2],
   v1 = v1,
   v2 = v2
 )
+controversial
 
 ggplot() + 
-  geom_point(data = controversial, aes(x = v1, y = v2, color = party),size=2) +
+  geom_jitter(data = controversial, aes(x = v1, y = v2, color = party,label=controversial$name),size=2,width=.005,height=.005) +
+  geom_text()+
   scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))
 
 
