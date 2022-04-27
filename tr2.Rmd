@@ -70,7 +70,7 @@ Bappro
 ```
 
 
-### The bipartisan matrix
+### The partisan matrix
 ```{r, results='hide'}
 P<-as.matrix(matrix[1:429,10:24])
 ptp<-t(P)%*%P
@@ -90,9 +90,9 @@ In this case, we found that the dominant eigenvector accounts for over 85% of th
 To get v1 and v2:
 ```{r}
 ppt <- P %*% t(P)
-pv1 <- eigen(bbt)$vectors[,1]/norm(eigen(bbt)$vectors[,1],'2') #normalized v1
-pv2 <- eigen(bbt)$vectors[,2]/norm(eigen(bbt)$vectors[,2],'2') #normalized v2
-pv3 <- eigen(bbt)$vectors[,3]/norm(eigen(bbt)$vectors[,3],'2') #normalized v3
+pv1 <- eigen(ppt)$vectors[,1]/norm(eigen(ppt)$vectors[,1],'2') #normalized v1
+pv2 <- eigen(ppt)$vectors[,2]/norm(eigen(ppt)$vectors[,2],'2') #normalized v2
+pv3 <- eigen(ppt)$vectors[,3]/norm(eigen(ppt)$vectors[,3],'2') #normalized v3
 controversial <- data.frame(
   name = matrix[1:429,2],
   party = matrix[1:429,3],
@@ -113,49 +113,55 @@ Pappro <- sqrt(eigen(ptp)$values[1]) * pu1 %*% t(pv1) + sqrt(eigen(ptp)$values[2
 Pappro
 ```
 
-## Are people always in the same cluster? Yes, all of the people stay in their cluster in B and P.
-
-### Bipartisan matrix(B,weed): Get names of Republicans in the upper cluster.(68 people)
+## Are people always in the same cluster? No.
+### Partisan matrix(P,controversial): Get names of Republicans in the upper cluster.(72 people)
 ```{r}
-B_upperRepub <- marijuana %>% filter(bv1 > 0.045, bv2 > 0.018, bv2 < 0.03)
-#View(upperRepub)
-B_upperRepub$name
-```
-
-### Bipartisan matrix(B,weed): Get names of Republicans in the lower cluster.(87 people)
-```{r}
-B_lowerRepub <- marijuana %>% filter(bv1 > 0.036, bv2 < -0.07, bv2 > -0.09)
-#View(lowerRepub)
-B_lowerRepub$name
-```
-
-### Partisan matrix(P,controversial): Get names of Republicans in the upper cluster.(68 people)
-```{r}
-P_upperRepub <- controversial %>% filter(bv1 > 0.045, bv2 > 0.018, bv2 < 0.03)
+P_upperRepub <- filter(controversial,controversial$pv1 > 0, controversial$pv2 > 0.06)
 #View(P_upperRepub)
 P_upperRepub$name
 ```
 
 
-### Partisan matrix(P,controversial): Get names of Republicans in the lower cluster. (87 people)
+### Partisan matrix(P,controversial): Get names of Republicans in the lower cluster. (114 people)
 ```{r}
-P_lowerRepub <- controversial %>% filter(bv1 > 0.036, bv2 < -0.07, bv2 > -0.09)
+P_lowerRepub <- filter(controversial, controversial$pv1 > 0.04, controversial$pv2< 0.05, controversial$pv2 > 0.03)
 #View(P_lowerRepub)
 P_lowerRepub$name
 ```
-### Get the overlapping names between B's and P's upper cluster Respublicans
+### Bipartisan matrix(B,weed): Get names of Republicans in the upper cluster.(68 people)
+```{r}
+B_upperRepub <- filter(marijuana, marijuana$bv1 > 0.045, marijuana$bv2 > 0.018, marijuana$bv2 < 0.03)
+#View(B_upperRepub)
+B_upperRepub$name
+```
+
+### Bipartisan matrix(B,weed): Get names of Republicans in the lower cluster.(87 people)
+```{r}
+B_lowerRepub <- filter(marijuana, marijuana$bv1 > 0.036, marijuana$bv2 < -0.07, marijuana$bv2 > -0.09)
+#View(B_lowerRepub)
+B_lowerRepub$name
+```
+
+
+
+### Get the overlapping names between B's upper and P's upper cluster Respublicans(27 people)
 ```{r}
 intersect(B_upperRepub$name,P_upperRepub$name)
 ```
-### Get the overlapping names between B's and P's lower cluster Respublicans
+### Get the overlapping names between B's lower and P's lower cluster Respublicans(50 people)
 ```{r}
 intersect(B_lowerRepub$name,P_lowerRepub$name)
 ```
 
+### Get the overlapping names between B's upper and P's lower cluster Respublicans(35 people)
+```{r}
+intersect(B_upperRepub$name,P_lowerRepub$name)
+```
 
-
-
-
+### Get the overlapping names between B's lower and P's upper cluster Respublicans(29 people)
+```{r}
+intersect(B_lowerRepub$name,P_upperRepub$name)
+```
 
 
 ### kmeans baby
