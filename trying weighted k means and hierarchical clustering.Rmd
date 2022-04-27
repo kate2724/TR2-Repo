@@ -134,4 +134,38 @@ ggplot(controversial,aes(pv1,pv2)) +
   geom_jitter(aes(color = hclust_height3),size=1,width=10,height=2)
 ```
 
+```{r}
+Ful<-as.matrix(matrix[1:429,4:24])
+ftf<-t(Ful)%*%Ful
+ftf
+eigen(ftf)
 
+fu1<-svd(ftf)$u[,1]/norm(svd(ftf)$u[,1],'2') #normalized dominate eigenvector
+fu2<-svd(ftf)$u[,2]/norm(svd(ftf)$u[,2],'2') #normalized second eigenvector
+ftfval <- svd(ftf)$d
+head(fu1)
+
+
+ftfval/sum(ftfval)
+
+fft <- Ful %*% t(Ful)
+fv1 <- eigen(fft)$vectors[,1]/norm(eigen(fft)$vectors[,1],'2') #normalized v1
+fv1
+fv2 <- eigen(fft)$vectors[,2]/norm(eigen(fft)$vectors[,2],'2') #normalized v2
+
+full <- data.frame(
+  party = matrix[1:429,3],
+  fv1 = fv1,
+  fv2 = fv2
+)
+
+full <- full %>%
+  mutate(hclust_height3=factor(cutree(hc_complete,h=150)))%>%
+  mutate(kclust_controversial2=as.factor(kclust_controversial$cluster))
+  
+ggplot() + 
+  geom_jitter(data = full, aes(x = fv1, y = fv2, color = hclust_height3,label=controversial$name),size=2,width=.005,height=.005)
+
+ggplot() + 
+  geom_jitter(data = full, aes(x = fv1, y = fv2, color = kclust_controversial2,label=controversial$name),size=2,width=.005,height=.005)
+```

@@ -180,7 +180,6 @@ controversial<-controversial%>%
   mutate(kclust_controversial=as.factor(kclust_controversial$cluster))
 ggplot(controversial,aes(pv1,pv2)) + 
   geom_jitter(aes(color = kclust_controversial),size=1,width=.005,height=.005) 
-controversial$pv3
 ```
 ## If we don't scale controversial_k
 ```{r}
@@ -236,6 +235,19 @@ ggplot() +
   geom_text()+
   scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))
 ```
+#assigned clusters made in controverisal to bigger matrix
+```{r}
+full <- full %>%
+  mutate(hclust_height3=factor(cutree(hc_complete,h=150)))%>%
+  mutate(kclust_controversial2=as.factor(kclust_controversial$cluster))
+  
+ggplot() + 
+  geom_jitter(data = full, aes(x = fv1, y = fv2, color = hclust_height3,label=controversial$name),size=2,width=.005,height=.005)
+
+ggplot() + 
+  geom_jitter(data = full, aes(x = fv1, y = fv2, color = kclust_controversial2,label=controversial$name),size=2,width=.005,height=.005)
+```
+
 
 ```{r, results='hide'}
 Fappro <- sqrt(eigen(ftf)$values[1]) * fu1 %*% t(fv1) + sqrt(eigen(ftf)$values[2]) * fu2 %*% t(fv2)
