@@ -146,7 +146,7 @@ dist_mat_scaled<-dist(scale(controversial_k))
 hc_complete<-hclust(dist_mat_scaled,method="complete")
 plot(hc_complete)
 controversial<-controversial%>%
-  mutate(hclust_height3=factor(cutree(hc_complete,h=3)))
+  mutate(hclust_height3=factor(cutree(hc_complete,h=4)))
 ggplot(controversial,aes(pv1,pv2)) + 
   geom_jitter(aes(color = hclust_height3),size=1,width=.005,height=.005)
 ```
