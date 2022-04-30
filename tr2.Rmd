@@ -58,7 +58,8 @@ marijuana <- data.frame(
 
 ggplot() + 
   geom_jitter(data = marijuana, aes(x = bv1, y = bv2, color = party),size=1,height=.005,width=.005) +
-  scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))
+  scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))+
+  ggtitle("Figure1: Voting spread for Marijuana-related issues") 
 
 ```
 
@@ -105,7 +106,8 @@ controversial <- data.frame(
 ```{r}
 ggplot(controversial,aes(pv1,pv2)) + 
   geom_jitter(aes(color = party),size=1,width=.005,height=.005) +
-  scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))
+  scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))+
+  ggtitle("Figure2: Voting spread for More Splitting Issues") 
 ```
 
 ```{r, results='hide'}
@@ -188,7 +190,8 @@ head(kclust_controversial2)
 controversial<-controversial%>%
   mutate(kclust_controversial2=as.factor(kclust_controversial2$cluster))
 ggplot(controversial,aes(pv1,pv2)) + 
-  geom_jitter(aes(color = kclust_controversial2),size=1,width=.005,height=.005) 
+  geom_jitter(aes(color = kclust_controversial2),size=1,width=.005,height=.005)+
+  ggtitle("Figure3: K-means clustering for More Splitting issues")  
 controversial$pv3
 ```
 
@@ -201,7 +204,8 @@ plot(hc_complete)
 controversial<-controversial%>%
   mutate(hclust_height3=factor(cutree(hc_complete,h=.1)))
 ggplot(controversial,aes(pv1,pv2)) + 
-  geom_jitter(aes(color = hclust_height3),size=1,width=.005,height=.005)
+  geom_jitter(aes(color = hclust_height3),size=1,width=.005,height=.005)+
+  ggtitle("Figure4: Hierarchial clustering for More Splitting issues")  
 ```
 
 ```{r}
