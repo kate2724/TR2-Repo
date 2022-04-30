@@ -59,7 +59,9 @@ marijuana <- data.frame(
 ggplot() + 
   geom_jitter(data = marijuana, aes(x = bv1, y = bv2, color = party),size=1,height=.005,width=.005) +
   scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))+
-  ggtitle("Figure1: Voting spread for Marijuana-related issues") 
+  xlab("partisan coordinates")+
+  ylab("bipartisan coordinates")+
+  ggtitle("Figure1: Voting spread for Marijuana-related Issues") 
 
 ```
 
@@ -107,7 +109,9 @@ controversial <- data.frame(
 ggplot(controversial,aes(pv1,pv2)) + 
   geom_jitter(aes(color = party),size=1,width=.005,height=.005) +
   scale_color_manual(values = c("Democrat" = "blue", "Republican" = "red"))+
-  ggtitle("Figure2: Voting spread for More Splitting Issues") 
+  xlab("partisan coordinates")+
+  ylab("bipartisan coordinates")+
+  ggtitle("Figure2: Voting spread for Controversial Issues") 
 ```
 
 ```{r, results='hide'}
@@ -180,7 +184,8 @@ head(kclust_controversial)
 
 controversial<-controversial%>%
   mutate(kclust_controversial=as.factor(kclust_controversial$cluster))
-ggplot(controversial,aes(pv1,pv2)) + 
+ggplot(controversial,aes(pv1,pv2)) + xlab("partisan coordinates")+
+  ylab("bipartisan coordinates")+
   geom_jitter(aes(color = kclust_controversial),size=1,width=.005,height=.005) 
 ```
 ## If we don't scale controversial_k
@@ -191,7 +196,9 @@ controversial<-controversial%>%
   mutate(kclust_controversial2=as.factor(kclust_controversial2$cluster))
 ggplot(controversial,aes(pv1,pv2)) + 
   geom_jitter(aes(color = kclust_controversial2),size=1,width=.005,height=.005)+
-  ggtitle("Figure3: K-means clustering for More Splitting issues")  
+  xlab("partisan coordinates")+
+  ylab("bipartisan coordinates")+
+  ggtitle("Figure3: K-means clustering for Controversial Issues")  
 controversial$pv3
 ```
 
@@ -205,7 +212,9 @@ controversial<-controversial%>%
   mutate(hclust_height3=factor(cutree(hc_complete,h=.1)))
 ggplot(controversial,aes(pv1,pv2)) + 
   geom_jitter(aes(color = hclust_height3),size=1,width=.005,height=.005)+
-  ggtitle("Figure4: Hierarchial clustering for More Splitting issues")  
+  xlab("partisan coordinates")+
+  ylab("bipartisan coordinates")+
+  ggtitle("Figure4: Hierarchial clustering for Controversial Issues")  
 ```
 
 ```{r}
