@@ -182,3 +182,11 @@ ggplot() +
 ggplot() + 
   geom_jitter(data = full, aes(x = fv1, y = fv2, color = kclust_controversial2,label=controversial$name),size=2,width=.005,height=.005)
 ```
+```{r}
+dist_mat_scaled<-dist(scale(controversial_k))
+hc_complete<-hclust(dist_mat_scaled,method="complete")
+hcd <- as.dendrogram(hc_complete)
+plot(hc_complete, ylab = "Height",leaflab = "none")
+plot(hcd, xlim = c(0,50), ylim = c(0,5),xlab="Representative Number",ylab="Complete Distance")
+```
+
