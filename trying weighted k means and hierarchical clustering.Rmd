@@ -114,14 +114,18 @@ controversial_k<-controversial%>%
   select(pv1,pv2,pv3,pv4)
 set.seed(169)
 kclust_controversial<-kmeans((controversial_k),centers=6)
-
+kclust_controversial1<-kmeans((controversial_k),centers=4)
 head(kclust_controversial)
 
 
 controversial<-controversial%>%
-  mutate(kclust_controversial2=as.factor(kclust_controversial$cluster))
+  mutate(kclust_controversial2=as.factor(kclust_controversial$cluster))%>%
+  mutate(kclust_controversial3=as.factor(kclust_controversial1$cluster))
+  
 ggplot(controversial,aes(pv1,pv2)) + 
   geom_jitter(aes(color = kclust_controversial2),size=1,height=2,width=10) 
+ggplot(controversial,aes(pv1,pv2)) + 
+  geom_jitter(aes(color = kclust_controversial3),size=1,height=2,width=10) 
 ```
 
 ```{r}
