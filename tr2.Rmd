@@ -258,7 +258,7 @@ ggplot() +
   geom_jitter(data = full, aes(x = fv1, y = fv2, color = hclust_height3,label=controversial$name),size=2,width=.005,height=.005)
 
 ggplot() + 
-  geom_jitter(data = full, aes(x = fv1, y = fv2, color = kclust_controversial2,label=controversial$name),size=2,width=.005,height=.005)
+  geom_jitter(data = full, aes(x = fv1, y = fv2,label=controversial$name),size=2,width=.005,height=.005)+scale_color_manual(values = c(kclust_controversial2$cluster1 = "blue", "Republican" = "red"))
 ```
 
 
